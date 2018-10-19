@@ -1,4 +1,4 @@
-#core node modules
+# Dependency directories
 node_modules
 
 #Skip the .env setting file
