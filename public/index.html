@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Chatroom</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <style> 
+      form {
+        padding: 20px; 
+        position: fixed;
+        bottom: 0; 
+        width: 100%; 
+        padding-right: 50px;
+        }
+      #messages {
+        list-style-type: none; 
+        margin: 0; 
+        padding: 0; 
+        width:100%;
+      }
+      #messages li {
+        padding: 5px 10px;
+      }
+      #messages li:nth-child(odd) {
+        background: #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <div class = "container-fluid">
+      <div class="row"> 
+        <ul id="messages">
+        </ul> 
+      </div>
+      <div class="row">
+          <form action=""> 
+            <div class="input-group mb-3">
+            <input id="m" autocomplete="off" type="text" class="form-control" placeholder="Message..." aria-label="Message..." aria-describedby="basic-addon2">
+            <div class="input-group-append">
+             <button class="btn btn-outline-secondary" type="submit">Send</button>
+            </div>
+          </div>
+          </form>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"> </script>
+    <script> 
+      const socket = io.connect();
+      $('form').submit(() => {
+        socket.emit('message', $('#m').val());
+        $('#m').val('');
+        return false;
+      });
+      /*
+      socket.on('message', (data) => {
+        console.log(data);
+        socket.emit('next message', {jeremy: `Great! Thank you`});
+      });
+      */
+      socket.on('connect', () => {
+        //emiting to everyone
+        socket.emit('message', 'User connected');
+      });
+
+      socket.on('message', (msg) => {
+        $('#messages').append($('<li>').text(msg));
+        console.log("HTML " +msg);
+      });
+    </script>
+  </body>
+</html>
